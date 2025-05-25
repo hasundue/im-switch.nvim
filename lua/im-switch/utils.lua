@@ -25,17 +25,7 @@ end
 ---@return Path the root path
 local function get_plugin_root_path()
   local path = vim.fn.fnamemodify(debug.getinfo(1, "S").source:sub(2), ":p:h") -- path to im-switch.nvim/lua/im-switch/
-  local result = vim.system({ "git", "rev-parse", "--show-toplevel" }, { text = true, cwd = path }):wait()
-
-  if result.code ~= 0 then
-    vim.api.nvim_err_writeln("Git command failed in directory: " .. path)
-    vim.api.nvim_err_writeln("Error: " .. result.stderr)
-    error("Unable to determine plugin root path")
-  end
-
-  local root_path = vim.trim(result.stdout)
-
-  return Path:new(root_path)
+  return Path:new(path):parent():parent()
 end
 
 --- Get the executable file extension based on OS and whether it is prebuilt
